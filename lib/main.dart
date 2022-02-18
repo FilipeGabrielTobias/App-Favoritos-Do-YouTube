@@ -1,6 +1,10 @@
+import 'package:favoritos_youtube/api.dart';
+import 'package:favoritos_youtube/screens/home.dart';
 import 'package:flutter/material.dart';
 
 void main() {
+  Api api = Api();
+  api.search('eletro');
   runApp(const MyApp());
 }
 
@@ -15,7 +19,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: Container(),
+      home: Home(),
     );
   }
 }
