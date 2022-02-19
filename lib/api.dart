@@ -1,9 +1,10 @@
+// @dart=2.9
 import 'dart:convert';
 
 import 'package:favoritos_youtube/models/video.dart';
 import 'package:http/http.dart' as http;
 
-const API_KEY = '';
+const API_KEY = 'AIzaSyDCdB1cfuHePo2yGR_G_5E60PK-z_LsHwo';
 
 class Api {
   search(String search) async {
@@ -15,7 +16,7 @@ class Api {
   }
 
   List<Video> decode(http.Response response) {
-    if (response.statusCode == 20) {
+    if (response.statusCode == 200) {
       var decoded = json.decode(response.body);
 
       List<Video> videos = decoded['items'].map<Video>((map) {
