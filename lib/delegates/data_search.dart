@@ -68,8 +68,6 @@ class DataSearch extends SearchDelegate<String> {
         },
       );
     }
-
-    return Container();
   }
 
   Future<List> suggestions(String search) async {
