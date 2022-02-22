@@ -1,4 +1,3 @@
-// @dart=2.9
 class Video {
   final String id;
   final String title;

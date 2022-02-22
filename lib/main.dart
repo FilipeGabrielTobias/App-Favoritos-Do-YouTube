@@ -1,4 +1,3 @@
-// @dart=2.9
 import 'package:bloc_pattern/bloc_pattern.dart';
 import 'package:favoritos_youtube/api.dart';
 import 'package:favoritos_youtube/blocs/videos_bloc.dart';
@@ -15,7 +14,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      bloc: VideosBloc(),
+      blocs: [Bloc((i) => VideosBloc())],
       child: MaterialApp(
         title: 'Flutter Demo',
         debugShowCheckedModeBanner: false,

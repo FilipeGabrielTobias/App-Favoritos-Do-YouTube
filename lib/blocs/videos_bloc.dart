@@ -4,7 +4,7 @@ import 'package:bloc_pattern/bloc_pattern.dart';
 import 'package:favoritos_youtube/api.dart';
 import 'package:favoritos_youtube/models/video.dart';
 
-class VideosBloc implements BlocBase {
+class VideosBloc extends BlocBase {
   Api api;
   List<Video> videos;
   final StreamController<List<Video>> _videosController = StreamController<List<Video>>();
@@ -19,7 +19,12 @@ class VideosBloc implements BlocBase {
   }
 
   void _search(String search) async {
-    videos = await api.search(search);
+    if (search != null) {
+      _videosController.sink.add([]);  
+      videos = await api.search(search);  
+    } else {
+      videos += await api.nextPage();
+    }
     _videosController.sink.add(videos);
   }
 
@@ -27,5 +32,6 @@ class VideosBloc implements BlocBase {
   void dispose() {
     _videosController.close();
     _searchController.close();
+    super.dispose();
   }
 }
