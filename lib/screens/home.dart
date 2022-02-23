@@ -1,6 +1,8 @@
 import 'package:bloc_pattern/bloc_pattern.dart';
+import 'package:favoritos_youtube/blocs/favorite_bloc.dart';
 import 'package:favoritos_youtube/blocs/videos_bloc.dart';
 import 'package:favoritos_youtube/delegates/data_search.dart';
+import 'package:favoritos_youtube/models/video.dart';
 import 'package:favoritos_youtube/widgets/video_tile.dart';
 import 'package:flutter/material.dart';
 
@@ -8,7 +10,8 @@ class Home extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    final bloc = BlocProvider.getBloc<VideosBloc>();
+    final videosbloc = BlocProvider.getBloc<VideosBloc>();
+    final favoriteBloc = BlocProvider.getBloc<FavoriteBloc>();
 
     return Scaffold(
       appBar: AppBar(
@@ -17,9 +20,19 @@ class Home extends StatelessWidget {
         elevation: 0,
         backgroundColor: Colors.black87,
         actions: <Widget>[
-          const Align(
+          Align(
             alignment: Alignment.center,
-            child: Text('0'),
+            child: StreamBuilder<Map<String, Video>>(
+              stream: favoriteBloc.outFav,
+              initialData: {},
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  return Text('${snapshot.data.length}');
+                } else {
+                  return Container();
+                }
+              },
+            ),
           ),
           IconButton(
             icon: const Icon(Icons.star),
@@ -30,7 +43,7 @@ class Home extends StatelessWidget {
             onPressed: () async {
               String result = await showSearch(context: context, delegate: DataSearch());
               if (result != null) {
-                bloc.inSearch.add(result);
+                videosbloc.inSearch.add(result);
               }
             },
           )
@@ -38,7 +51,7 @@ class Home extends StatelessWidget {
       ),
       backgroundColor: Colors.black87,
       body: StreamBuilder(
-        stream: bloc.outVideos,
+        stream: videosbloc.outVideos,
         initialData: [],
         builder: (context, snapshot) {
           if (snapshot.hasData) {
@@ -47,7 +60,7 @@ class Home extends StatelessWidget {
                 if (index < snapshot.data.length) {
                   return VideoTile(snapshot.data[index]);  
                 } else if (index > 1) {
-                  bloc.inSearch.add(null);
+                  videosbloc.inSearch.add(null);
                   return Container(
                     height: 40,
                     width: 40,
