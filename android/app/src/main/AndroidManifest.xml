@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.favoritos_youtube">
    <application
-        android:label="favoritos_youtube"
+        android:label="Favoritos do YouTube"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
