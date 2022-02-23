@@ -1,7 +1,9 @@
 import 'package:bloc_pattern/bloc_pattern.dart';
+import 'package:favoritos_youtube/api.dart';
 import 'package:favoritos_youtube/blocs/favorite_bloc.dart';
 import 'package:favoritos_youtube/models/video.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_youtube/flutter_youtube.dart';
 
 class VideoTile extends StatelessWidget {
 
@@ -13,8 +15,10 @@ class VideoTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final favoriteBloc = BlocProvider.getBloc<FavoriteBloc>();
 
-    return Container(
-      margin: const EdgeInsets.symmetric(vertical: 4.0),
+    return GestureDetector(
+      onTap: (){
+        FlutterYoutube.playYoutubeVideoById(apiKey: API_KEY, videoId: video.id);
+      },
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
@@ -23,7 +27,7 @@ class VideoTile extends StatelessWidget {
             child: Image.network(
               video.thumb,
               fit: BoxFit.cover,
-            )
+            ),
           ),
           Row(
             children: <Widget>[
@@ -56,7 +60,6 @@ class VideoTile extends StatelessWidget {
               ),
               StreamBuilder<Map<String, Video>>(
                 stream: favoriteBloc.outFav,
-                initialData: {},
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
                     return IconButton(

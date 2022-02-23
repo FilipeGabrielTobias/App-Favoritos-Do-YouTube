@@ -3,23 +3,18 @@ import 'dart:convert';
 
 import 'package:bloc_pattern/bloc_pattern.dart';
 import 'package:favoritos_youtube/models/video.dart';
+import 'package:rxdart/rxdart.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class FavoriteBloc extends BlocBase {
 
   Map<String, Video> _favorites = {};
-  final StreamController<Map<String, Video>> _favController = StreamController<Map<String, Video>>.broadcast();
+  final _favController = BehaviorSubject<Map<String, Video>>(seedValue: {});
+  final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
   Stream<Map<String, Video>> get outFav => _favController.stream;
 
-  // TODO: verificar erro ao utilizar o SharedPreferences 
   FavoriteBloc() {
-    // SharedPreferences.getInstance().then((prefs) {
-    //   if (prefs.getKeys().contains('favorites')) {
-    //     _favorites = json.decode(prefs.getString('favorites')).map((key, value) {
-    //       return MapEntry(key, Video.fromJson(value));
-    //     }).cast<String, Video>();
-    //     _favController.add(_favorites);
-    //   }
-    // });
+    _loadFav();
   }
 
   void toggleFavorite(Video video) {
@@ -31,13 +26,22 @@ class FavoriteBloc extends BlocBase {
 
     _favController.sink.add(_favorites);
 
-    // _saveFav();
+    _saveFav();
   }
 
-  void _saveFav() {
-    // SharedPreferences.getInstance().then((prefs){
-    //   prefs.setString('favorites', json.encode(_favorites));
-    // });
+  void _loadFav() async {
+    final SharedPreferences prefs = await _prefs;
+    if (prefs.getKeys().contains('favorites')) {
+      _favorites = json.decode(prefs.getString('favorites')).map((key, value) {
+        return MapEntry(key, Video.fromJson(value));
+      }).cast<String, Video>();
+      _favController.add(_favorites);
+    }
+  }
+
+  void _saveFav() async {
+    final SharedPreferences prefs = await _prefs;
+    prefs.setString('favorites', json.encode(_favorites));
   }
 
   @override
